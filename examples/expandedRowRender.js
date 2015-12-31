@@ -1,3 +1,4 @@
+/* eslint react/no-multi-comp: 0*/
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Table = require('rc-table');
@@ -63,6 +64,7 @@ const MyTable = React.createClass({
   },
 
   expandedRowRender(record) {
+    console.log(record);
     return <p>extra: {record.a}</p>;
   },
 

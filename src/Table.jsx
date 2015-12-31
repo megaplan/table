@@ -5,6 +5,7 @@ const Table = React.createClass({
   propTypes: {
     data: React.PropTypes.array,
     expandIconAsCell: React.PropTypes.bool,
+    expandIconColumnHeader: React.PropTypes.bool,
     expandedRowKeys: React.PropTypes.array,
     defaultExpandedRowKeys: React.PropTypes.array,
     useFixedHeader: React.PropTypes.bool,
@@ -17,6 +18,7 @@ const Table = React.createClass({
     expandedRowClassName: React.PropTypes.func,
     childrenColumnName: React.PropTypes.string,
     onExpandedRowsChange: React.PropTypes.func,
+    indentSize: React.PropTypes.number,
   },
 
   getDefaultProps() {
@@ -24,6 +26,7 @@ const Table = React.createClass({
       data: [],
       useFixedHeader: false,
       expandIconAsCell: false,
+      expandIconColumnHeader: true,
       columns: [],
       defaultExpandedRowKeys: [],
       rowKey(o) {
@@ -41,6 +44,7 @@ const Table = React.createClass({
       bodyStyle: {},
       style: {},
       childrenColumnName: 'children',
+      indentSize: 15,
     };
   },
 
@@ -106,7 +110,7 @@ const Table = React.createClass({
 
   getThs() {
     let ths = [];
-    if (this.props.expandIconAsCell) {
+    if (this.props.expandIconAsCell && this.props.expandIconColumnHeader) {
       ths.push({
         key: 'rc-table-expandIconAsCell',
         className: `${this.props.prefixCls}-expand-icon-th`,
@@ -114,9 +118,15 @@ const Table = React.createClass({
       });
     }
     ths = ths.concat(this.props.columns);
-    return ths.map((c)=> {
-      if (c.colSpan !== 0) {
-        return <th key={c.key} colSpan={c.colSpan} className={c.className || ''}>{c.title}</th>;
+    return ths.map((c, index) => {
+      let colSpan = c.colSpan;
+      if (colSpan !== 0) {
+        if (this.props.expandIconAsCell && !this.props.expandIconColumnHeader && index === 0) {
+          // if expand icon is rendered as icon and expandIconColumnHeader is false, we need to span second column header
+          colSpan = colSpan || 1;
+          colSpan += 1;
+        }
+        return <th key={c.key} colSpan={colSpan} className={c.className || ''}>{c.title}</th>;
       }
     });
   },
@@ -135,7 +145,7 @@ const Table = React.createClass({
     </tr>);
   },
 
-  getRowsByData(data, visible) {
+  getRowsByData(data, visible, indent) {
     const props = this.props;
     const columns = props.columns;
     const childrenColumnName = props.childrenColumnName;
@@ -145,17 +155,22 @@ const Table = React.createClass({
     const keyFn = props.rowKey;
     const rowClassName = props.rowClassName;
     const expandedRowClassName = props.expandedRowClassName;
+    const needIndentSpaced = props.data.some(record =>
+      record[childrenColumnName] && record[childrenColumnName].length > 0);
     for (let i = 0; i < data.length; i++) {
       const record = data[i];
       const key = keyFn ? keyFn(record, i) : undefined;
       const childrenColumn = record[childrenColumnName];
       const isRowExpanded = this.isRowExpanded(record);
       let expandedRowContent;
-      if (expandedRowRender) {
+      if (expandedRowRender && isRowExpanded) {
         expandedRowContent = expandedRowRender(record, i);
       }
       const className = rowClassName(record, i);
       rst.push(<TableRow
+        indent={indent}
+        indentSize={props.indentSize}
+        needIndentSpaced={needIndentSpaced}
         className={className}
         record={record}
         expandIconAsCell={expandIconAsCell}
@@ -163,7 +178,7 @@ const Table = React.createClass({
         index={i}
         visible={visible}
         onExpand={this.onExpanded}
-        expandable={childrenColumn || expandedRowContent}
+        expandable={childrenColumn || expandedRowRender}
         expanded={isRowExpanded}
         prefixCls={`${props.prefixCls}-row`}
         childrenColumnName={childrenColumnName}
@@ -176,14 +191,14 @@ const Table = React.createClass({
         rst.push(this.getExpandedRow(key, expandedRowContent, subVisible, expandedRowClassName(record, i)));
       }
       if (childrenColumn) {
-        rst = rst.concat(this.getRowsByData(childrenColumn, subVisible));
+        rst = rst.concat(this.getRowsByData(childrenColumn, subVisible, indent + 1));
       }
     }
     return rst;
   },
 
   getRows() {
-    return this.getRowsByData(this.state.data, true);
+    return this.getRowsByData(this.state.data, true, 0);
   },
 
   getColGroup() {
