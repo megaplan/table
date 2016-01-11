@@ -82,10 +82,16 @@ const TableRow = React.createClass({
         </td>);
       }
     }
+
+    let onClick = onRowClick ? onRowClick.bind(null, record, index) : null;
+    if (props.expandOnRowClick) {
+      onClick = onExpand;
+    }
+
     return (
       <tr className={`${prefixCls} ${props.className}`}
           style={{display: props.visible ? '' : 'none'}}
-          onClick={onRowClick ? onRowClick.bind(null, record, index) : (props.expandOnRowClick ? onExpand : null)}
+          onClick={onClick}
       >{cells}</tr>);
   },
 });
