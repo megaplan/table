@@ -21,6 +21,9 @@ const Table = React.createClass({
     onExpandedRowsChange: React.PropTypes.func,
     indentSize: React.PropTypes.number,
     onRowClick: React.PropTypes.func,
+    onClickHeader: React.PropTypes.func,
+    sortColumn: React.PropTypes.string,
+    orderBy: React.PropTypes.number
   },
 
   getDefaultProps() {
@@ -60,12 +63,12 @@ const Table = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    if ('data' in nextProps) {
+    if('data' in nextProps) {
       this.setState({
         data: nextProps.data,
       });
     }
-    if ('expandedRowKeys' in nextProps) {
+    if('expandedRowKeys' in nextProps) {
       this.setState({
         expandedRowKeys: nextProps.expandedRowKeys,
       });
@@ -73,7 +76,7 @@ const Table = React.createClass({
   },
 
   onExpandedRowsChange(expandedRowKeys) {
-    if (!this.props.expandedRowKeys) {
+    if(!this.props.expandedRowKeys) {
       this.setState({
         expandedRowKeys: expandedRowKeys,
       });
@@ -83,9 +86,9 @@ const Table = React.createClass({
 
   onExpanded(expanded, record) {
     const info = this.findExpandedRow(record);
-    if (info && !expanded) {
+    if(info && !expanded) {
       this.onRowDestroy(record);
-    } else if (!info && expanded) {
+    } else if(!info && expanded) {
       const expandedRows = this.getExpandedRows().concat();
       expandedRows.push(this.props.rowKey(record));
       this.onExpandedRowsChange(expandedRows);
@@ -97,11 +100,11 @@ const Table = React.createClass({
     const rowKey = this.props.rowKey(record);
     let index = -1;
     expandedRows.forEach((r, i) => {
-      if (r === rowKey) {
+      if(r === rowKey) {
         index = i;
       }
     });
-    if (index !== -1) {
+    if(index !== -1) {
       expandedRows.splice(index, 1);
     }
     this.onExpandedRowsChange(expandedRows);
@@ -111,9 +114,15 @@ const Table = React.createClass({
     return this.props.expandedRowKeys || this.state.expandedRowKeys;
   },
 
-  getThs() {
+  onHeadCellClick(event){
+    if(this.props.onClickHeader) {
+      this.props.onClickHeader(event.target.getAttribute('data-columns-name'))
+    }
+  },
+
+  getThead() {
     let ths = [];
-    if (this.props.expandIconAsCell && this.props.expandIconColumnHeader) {
+    if(this.props.expandIconAsCell && this.props.expandIconColumnHeader) {
       ths.push({
         key: 'rc-table-expandIconAsCell',
         className: `${this.props.prefixCls}-expand-icon-th`,
@@ -121,23 +130,38 @@ const Table = React.createClass({
       });
     }
     ths = ths.concat(this.props.columns);
-    return ths.map((c, index) => {
+    const columns = ths.map((c, index) => {
       let colSpan = c.colSpan;
-      if (colSpan !== 0) {
-        if (this.props.expandIconAsCell && !this.props.expandIconColumnHeader && index === 0) {
+      let sort = "";
+      if(colSpan !== 0) {
+        if(this.props.expandIconAsCell && !this.props.expandIconColumnHeader && index === 0) {
           // if expand icon is rendered as icon and expandIconColumnHeader is false, we need to span second column header
           colSpan = colSpan || 1;
           colSpan += 1;
         }
-        return <th key={c.key} colSpan={colSpan} className={c.className || ''}>{c.title}</th>;
+        if(this.props.sortColumn === c.dataIndex) {
+          sort = this.props.orderBy === 0 ? "asc" : "desc"
+        }
+        return <th key={c.key}
+                   colSpan={colSpan}
+                   className={c.className || ''}
+                   data-columns-name={c.dataIndex}
+                   data-sort-flag={sort}>
+          {c.title}
+        </th>;
       }
     });
+    return (<thead className={`${this.props.prefixCls}-thead`} onClick={this.onHeadCellClick}>
+    <tr>
+      {columns}
+    </tr>
+    </thead>);
   },
 
   getExpandedRow(key2, content, visible, className) {
     let key = key2;
     const prefixCls = this.props.prefixCls;
-    if (key) {
+    if(key) {
       key += '-extra-row';
     }
     return (<tr key={key} style={{display: visible ? '' : 'none'}} className={`${prefixCls}-expanded-row ${className}`}>
@@ -150,31 +174,35 @@ const Table = React.createClass({
 
   getRowsByData(data, visible, indent) {
     const props = this.props;
-    const columns = props.columns;
-    const childrenColumnName = props.childrenColumnName;
-    const expandedRowRender = props.expandedRowRender;
-    const expandIconAsCell = props.expandIconAsCell;
-    const expandOnRowClick = props.expandOnRowClick;
+    const {
+      columns,
+      childrenColumnName,
+      expandedRowRender,
+      expandIconAsCell,
+      expandOnRowClick,
+      rowKey,
+      rowClassName,
+      expandedRowClassName,
+      onRowClick,
+      indentSize,
+      prefixCls
+      } = this.props;
     let rst = [];
-    const keyFn = props.rowKey;
-    const rowClassName = props.rowClassName;
-    const expandedRowClassName = props.expandedRowClassName;
     const needIndentSpaced = props.data.some(record =>
-      record[childrenColumnName] && record[childrenColumnName].length > 0);
-    const onRowClick = props.onRowClick;
-    for (let i = 0; i < data.length; i++) {
+    record[childrenColumnName] && record[childrenColumnName].length > 0);
+    for(let i = 0; i < data.length; i++) {
       const record = data[i];
-      const key = keyFn ? keyFn(record, i) : undefined;
+      const key = rowKey ? rowKey(record, i) : undefined;
       const childrenColumn = record[childrenColumnName];
       const isRowExpanded = this.isRowExpanded(record);
       let expandedRowContent;
-      if (expandedRowRender && isRowExpanded) {
+      if(expandedRowRender && isRowExpanded) {
         expandedRowContent = expandedRowRender(record, i);
       }
       const className = rowClassName(record, i);
       rst.push(<TableRow
         indent={indent}
-        indentSize={props.indentSize}
+        indentSize={indentSize}
         needIndentSpaced={needIndentSpaced}
         className={className}
         record={record}
@@ -186,7 +214,7 @@ const Table = React.createClass({
         onExpand={this.onExpanded}
         expandable={childrenColumn || expandedRowRender}
         expanded={isRowExpanded}
-        prefixCls={`${props.prefixCls}-row`}
+        prefixCls={`${prefixCls}-row`}
         childrenColumnName={childrenColumnName}
         columns={columns}
         onRowClick={onRowClick}
@@ -194,10 +222,10 @@ const Table = React.createClass({
 
       const subVisible = visible && isRowExpanded;
 
-      if (expandedRowContent && isRowExpanded) {
+      if(expandedRowContent && isRowExpanded) {
         rst.push(this.getExpandedRow(key, expandedRowContent, subVisible, expandedRowClassName(record, i)));
       }
-      if (childrenColumn) {
+      if(childrenColumn) {
         rst = rst.concat(this.getRowsByData(childrenColumn, subVisible, indent + 1));
       }
     }
@@ -210,7 +238,7 @@ const Table = React.createClass({
 
   getColGroup() {
     let cols = [];
-    if (this.props.expandIconAsCell) {
+    if(this.props.expandIconAsCell) {
       cols.push(<col className={`${this.props.prefixCls}-expand-icon-col`} key="rc-table-expand-icon-col"></col>);
     }
     cols = cols.concat(this.props.columns.map((c)=> {
@@ -235,26 +263,20 @@ const Table = React.createClass({
   render() {
     const props = this.props;
     const prefixCls = props.prefixCls;
-    const columns = this.getThs();
     const rows = this.getRows();
     let className = props.prefixCls;
-    if (props.className) {
+    if(props.className) {
       className += ' ' + props.className;
     }
     let headerTable;
-    let thead = (<thead className={`${prefixCls}-thead`}>
-    <tr>
-      {columns}
-    </tr>
-    </thead>);
-    if (props.useFixedHeader) {
+    let thead = this.getThead();
+    if(props.useFixedHeader) {
       headerTable = (<div className={`${prefixCls}-header`}>
         <table>
           {this.getColGroup()}
           {thead}
         </table>
       </div>);
-      thead = null;
     }
     return (
       <div className={className} style={props.style}>
