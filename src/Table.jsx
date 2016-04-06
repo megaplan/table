@@ -273,7 +273,7 @@ const Table = React.createClass({
           onRowClick={onRowClick}
           { ...onHoverProps }
           key={key}
-          rowRef={rowRef}
+          ref={rowRef(record, i)}
         />
       );
 
