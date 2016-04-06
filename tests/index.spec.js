@@ -1,15 +1,17 @@
+/* eslint-disable no-console,func-names,react/no-multi-comp */
 const expect = require('expect.js');
 const Table = require('../');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const $ = require('jquery');
+import './PagingColumns.spec';
 
 describe('table', function() {
   const div = document.createElement('div');
   document.body.appendChild(div);
 
   const columns = [
-    {title: '表头1', dataIndex: 'a', colSpan: 2, width: 100, render: function(o, row, index) {
+    {title: '表头1', dataIndex: 'a', key: 'a', colSpan: 2, width: 100, render: function(o, row, index) {
       // 第一列中第一行合并两列
       const obj = {
         children: o,
@@ -20,7 +22,7 @@ describe('table', function() {
       }
       return obj;
     }},
-    {id: '123', title: '表头2', colSpan: 0, dataIndex: 'b', width: 100, render: function(o, row, index) {
+    {id: '123', title: '表头2', colSpan: 0, dataIndex: 'b', key: 'b', width: 100, render: function(o, row, index) {
       // 2列被合并掉了colSpan:0，第二列中第一行合并两行rowSpan:2
       const obj = {
         children: o,
@@ -31,7 +33,7 @@ describe('table', function() {
       }
       return obj;
     }},
-    {title: '表头3', dataIndex: 'c', width: 200, render: function(o, row, index) {
+    {title: '表头3', dataIndex: 'c', key: 'c', width: 200, render: function(o, row, index) {
       const obj = {
         children: o,
         props: {},
@@ -45,12 +47,47 @@ describe('table', function() {
       return obj;
     }},
     {
-      title: '操作', dataIndex: '', renderer: function() {
+      title: 'operation', dataIndex: '', key: 'operation', render: function() {
         return <a href="#">操作</a>;
       },
     },
+    {
+      title: 'number', dataIndex: '', key: 'number', render: function() {
+        return 123;
+      },
+    },
+    {
+      title: 'zero', dataIndex: '', key: 'zero', render: function() {
+        return 0;
+      },
+    },
+    {
+      title: 'empty string', dataIndex: '', key: 'empty-string', render: function() {
+        return '';
+      },
+    },
+    {
+      title: 'string', dataIndex: '', key: 'string', render: function() {
+        return 'text';
+      },
+    },
+    {
+      title: 'false', dataIndex: '', key: 'false', render: function() {
+        return false;
+      },
+    },
+    {
+      title: 'Array', dataIndex: '', key: 'array', render: function() {
+        return [<a href="#" key="1">操作1</a>, <a href="#" key="2">操作2</a>];
+      },
+    },
   ];
-  const data = [{a: '123'}, {a: 'cdd', b: 'edd'}, {a: '1333', c: 'eee', d: 2}];
+  const data = [
+    {a: '123', key: '1'},
+    {a: 'cdd', b: 'edd', key: '2'},
+    {a: '1333', c: 'eee', d: 2, key: '3'},
+    {a: {}, key: '4'},
+  ];
   let node = $(div);
 
   beforeEach(function() {
@@ -102,5 +139,22 @@ describe('table', function() {
     expect(node.find('table').length).to.be(1);
     const rowspanNum = 2;
     expect(node.find('tbody tr').eq(1).find('td').length).to.be(columns.length - (rowspanNum - 1));
+  });
+
+  it('should render columns', function() {
+    const trLstTds = node.find('tbody tr:last td');
+    expect(trLstTds.eq(3).find('a').length).to.be(1); // jsx
+    expect(trLstTds.eq(4).text()).to.be('123'); // number
+    expect(trLstTds.eq(5).text()).to.be('0'); // 0
+    expect(trLstTds.eq(6).text()).to.be(''); // empty string
+    expect(trLstTds.eq(7).text()).to.be('text'); // string
+    expect(trLstTds.eq(8).text()).to.be(''); // false
+    expect(trLstTds.eq(9).find('a').length).to.be(2); // array
+  });
+
+  // https://github.com/ant-design/ant-design/issues/1202
+  it('should not render object in cell', function() {
+    const trLstTds = node.find('tbody tr:last td');
+    expect(trLstTds.eq(0).text()).to.be('');
   });
 });

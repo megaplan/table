@@ -1,6 +1,27 @@
 # History
 ----
 
+## 3.11.0 / 2016-02-25
+
+- Add prop `showHeader`
+- support render footer via `footer={() => <div>xxx</div>}`
+
+## 3.10.0 / 2016-02-22
+
+- Add prop expandIconColumnIndex
+
+## 3.9.0 / 2016-01-19
+
+- support pinned and paging columns.
+
+## 3.8.0
+
+- Add `onRowClick`
+
+## 3.7.0
+
+- Add `childenIndent`
+
 ## 3.6.0 / 2015-11-11
 
 - add defaultExpandedRowKeys/expandedRowKeys/onExpandedRowsChange prop

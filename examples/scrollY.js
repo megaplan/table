@@ -1,4 +1,4 @@
-/* eslint react/no-multi-comp: 0*/
+/* eslint-disable no-console,func-names,react/no-multi-comp */
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Table = require('rc-table');
@@ -48,14 +48,12 @@ const Test = React.createClass({
     return (
       <Table columns={columns}
         data={data}
-        useFixedHeader
+        scroll={{ y: 300 }}
         rowKey={getRowKey}
         bodyStyle={{
-          overflow: 'auto',
-          height: 200,
           display: this.state.showBody ? '' : 'none',
         }}
-        className="table"/>
+        className="table" />
     );
   },
 });

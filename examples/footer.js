@@ -17,12 +17,16 @@ const columns = [
 
 const data = [{a: '123', key: '1'}, {a: 'cdd', b: 'edd', key: '2'}, {a: '1333', c: 'eee', d: 2, key: '3'}];
 
+const footer = (currentData) => {
+  return <div>Footer: {currentData.length} items</div>;
+};
+
 ReactDOM.render(
   <div>
     <h2>simple table</h2>
     <Table columns={columns}
       data={data}
-      className="table"/>
+      footer={footer} />
   </div>,
   document.getElementById('__react-content')
 );

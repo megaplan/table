@@ -19,8 +19,9 @@ const data = [{a: '123', key: '1'}, {a: 'cdd', b: 'edd', key: '2'}, {a: '1333', 
 
 ReactDOM.render(
   <div>
-    <h2>simple table</h2>
+    <h2>hide table head</h2>
     <Table columns={columns}
+      showHeader={false}
       data={data}
       className="table"/>
   </div>,

@@ -1,11 +1,11 @@
-/* eslint react/no-multi-comp: 0*/
+/* eslint-disable no-console,func-names,react/no-multi-comp */
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Table = require('rc-table');
 require('rc-table/assets/index.less');
 const Menu = require('rc-menu');
-require('rc-dropdown/assets/index.less');
-require('rc-menu/assets/index.less');
+require('rc-dropdown/assets/index.css');
+require('rc-menu/assets/index.css');
 const DropDown = require('rc-dropdown');
 
 const data = [];

@@ -3,12 +3,29 @@ import React from 'react';
 const TableRow = React.createClass({
   propTypes: {
     onDestroy: React.PropTypes.func,
+    onRowClick: React.PropTypes.func,
     record: React.PropTypes.object,
     prefixCls: React.PropTypes.string,
+    expandIconColumnIndex: React.PropTypes.number,
+    onHover: React.PropTypes.func,
+  },
+
+  getDefaultProps() {
+    return {
+      onRowClick() {},
+      onDestroy() {},
+      expandIconColumnIndex: 0,
+      onHover() {},
+    };
   },
 
   componentWillUnmount() {
     this.props.onDestroy(this.props.record);
+  },
+
+  isInvalidRenderCellText(text) {
+    return text && !React.isValidElement(text) &&
+      Object.prototype.toString.call(text) === '[object Object]';
   },
 
   render() {
@@ -25,6 +42,7 @@ const TableRow = React.createClass({
     const indentSize = props.indentSize;
     const needIndentSpaced = props.needIndentSpaced;
     const onRowClick = props.onRowClick;
+    const expandIconColumnIndex = props.expandIconColumnIndex;
 
     let onExpand = null;
 
@@ -34,52 +52,68 @@ const TableRow = React.createClass({
       const render = col.render;
       let text = record[col.dataIndex];
 
-      let expandIcon = null;
+      let expandIcon;
       let tdProps;
       let colSpan;
       let rowSpan;
       let notRender = false;
-      let indentText;
 
-      if (i === 0 && expandable) {
+      if (expandable) {
         onExpand = props.onExpand.bind(null, !expanded, record);
-        expandIcon = (<span
-          className={`${prefixCls}-expand-icon ${prefixCls}-${expanded ? 'expanded' : 'collapsed'}`}
-          onClick={onExpand}/>);
-      } else if (i === 0 && needIndentSpaced) {
-        expandIcon = (<span
-          className={`${prefixCls}-expand-icon ${prefixCls}-spaced`} />);
+        expandIcon = (
+          <span className={`${prefixCls}-expand-icon ${prefixCls}-${expanded ? 'expanded' : 'collapsed'}`}
+            onClick={onExpand} />
+        );
+      } else if (needIndentSpaced) {
+        expandIcon = <span className={`${prefixCls}-expand-icon ${prefixCls}-spaced`} />;
       }
 
+      const isColumnHaveExpandIcon = expandIconAsCell ? false : (i === expandIconColumnIndex);
+
       if (expandIconAsCell && i === 0) {
-        cells.push(<td className={`${prefixCls}-expand-icon-cell`}
-                       key="rc-table-expand-icon-cell">{expandIcon}</td>);
-        expandIcon = null;
+        cells.push(
+          <td className={`${prefixCls}-expand-icon-cell`}
+            key="rc-table-expand-icon-cell">
+            {expandIcon}
+          </td>
+        );
       }
 
       if (render) {
-        text = render(text, record, index) || {};
-        tdProps = text.props || {};
-
-        if (typeof text !== 'string' && !React.isValidElement(text) && 'children' in text) {
+        text = render(text, record, index);
+        if (this.isInvalidRenderCellText(text)) {
+          tdProps = text.props || {};
+          rowSpan = tdProps.rowSpan;
+          colSpan = tdProps.colSpan;
           text = text.children;
         }
-        rowSpan = tdProps.rowSpan;
-        colSpan = tdProps.colSpan;
+      }
+
+      // Fix https://github.com/ant-design/ant-design/issues/1202
+      if (this.isInvalidRenderCellText(text)) {
+        text = null;
       }
 
       if (rowSpan === 0 || colSpan === 0) {
         notRender = true;
       }
 
-      indentText = i === 0 ? (<span style={{paddingLeft: indentSize * indent + 'px'}} className={`${prefixCls}-indent indent-level-${indent}`}></span>) : null;
+      const indentText = (
+        <span style={{paddingLeft: indentSize * indent + 'px'}}
+          className={`${prefixCls}-indent indent-level-${indent}`} />
+      );
 
       if (!notRender) {
-        cells.push(<td key={col.key} colSpan={colSpan} rowSpan={rowSpan} className={`${colClassName}`}>
-        {indentText}
-        {expandIcon}
-        {text}
-        </td>);
+        cells.push(
+          <td key={col.key}
+            colSpan={colSpan}
+            rowSpan={rowSpan}
+            className={colClassName}>
+            {isColumnHaveExpandIcon ? indentText : null}
+            {isColumnHaveExpandIcon ? expandIcon : null}
+            {text}
+          </td>
+        );
       }
     }
 
@@ -89,10 +123,14 @@ const TableRow = React.createClass({
     }
 
     return (
-      <tr className={`${prefixCls} ${props.className}`}
-          style={{display: props.visible ? '' : 'none'}}
-          onClick={onClick}
-      >{cells}</tr>);
+      <tr onClick={onClick}
+        onMouseEnter={props.onHover.bind(null, true, index)}
+        onMouseLeave={props.onHover.bind(null, false, index)}
+        className={`${prefixCls} ${props.className} ${prefixCls}-level-${indent}`}
+        style={props.visible ? null : { display: 'none' }}>
+        {cells}
+      </tr>
+    );
   },
 });
 

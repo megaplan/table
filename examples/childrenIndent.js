@@ -1,4 +1,4 @@
-/* eslint react/no-multi-comp: 0*/
+/* eslint-disable no-console,func-names,react/no-multi-comp */
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Table = require('rc-table');
@@ -78,6 +78,6 @@ const data = [{
 }];
 
 ReactDOM.render(
-  <Table columns={columns} data={data} indentSize={30} />,
+  <Table defaultExpandAllRows columns={columns} data={data} indentSize={30} />,
   document.getElementById('__react-content')
 );

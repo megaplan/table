@@ -82,7 +82,7 @@ var table = React.render(
   document.getElementById('__react-content')
 );
 ```
-## API 
+## API
 
 ### property
 
@@ -121,10 +121,22 @@ var table = React.render(
           <td>whether use separator table for header. better set width for columns</td>
       </tr>
       <tr>
+          <td>scroll</td>
+          <td>Object</td>
+          <th>{x: false, y: false}</th>
+          <td>whether table can be scroll in x/y direction, `x` or `y` can be a number that indicated the width and height of table body</td>
+      </tr>
+      <tr>
           <td>expandIconAsCell</td>
           <td>Boolean</td>
           <th>false</th>
           <td>whether render expandIcon as a cell</td>
+      </tr>
+      <tr>
+          <td>expandIconColumnIndex</td>
+          <td>Number</td>
+          <th>0</th>
+          <td>The index of expandIcon which column will be inserted when expandIconAsCell is false</td>
       </tr>
       <tr>
           <td>expandIconColumnHeader</td>
@@ -157,6 +169,12 @@ var table = React.render(
           <td>current expanded rows keys</td>
       </tr>
       <tr>
+          <td>defaultExpandAllRows</td>
+          <td>Boolean</td>
+          <th>false</th>
+          <td>Expand All Rows initially</td>
+      </tr>
+      <tr>
           <td>onExpandedRowsChange</td>
           <td>Function(expandedRows)</td>
           <th>save the expanded rows in the internal state</th>
@@ -185,6 +203,30 @@ var table = React.render(
           <td>Function(record, index)</td>
           <th></th>
           <td>handle rowClick action, index means the index of current row among fatherElement[childrenColumnName]</td>
+      </tr>
+      <tr>
+          <td>columnsPageSize</td>
+          <td>Number</td>
+          <th>5</th>
+          <td>pageSize of columns. (Deprecated, use fixed columns)</td>
+      </tr>
+      <tr>
+          <td>columnsPageRange</td>
+          <td>Array</td>
+          <th></th>
+          <td>columns index range need paging, like [2,10]. (Deprecated, use column.fixed)</td>
+      </tr>
+      <tr>
+          <td>showHeader</td>
+          <td>Boolean</td>
+          <th>true</th>
+          <td>whether table head is shown</td>
+      </tr>
+      <tr>
+          <td>footer</td>
+          <td>Function(currentData)</td>
+          <th></th>
+          <td>table footer render function</td>
       </tr>
       <tr>
           <td>columns</td>
@@ -230,7 +272,13 @@ var table = React.render(
                       <td>width</td>
                       <td>String|Number</td>
                       <th></th>
-                      <td>he width of the specific proportion calculation according to the width of the columns</td>
+                      <td>width of the specific proportion calculation according to the width of the columns</td>
+                  </tr>
+                  <tr>
+                      <td>fixed</td>
+                      <td>String|Boolean</td>
+                      <th></th>
+                      <td>this column will be fixed when table scroll horizontally: true or 'left' or 'right'</td>
                   </tr>
                   <tr>
                       <td>render</td>
