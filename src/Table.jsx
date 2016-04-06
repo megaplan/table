@@ -31,7 +31,7 @@ const Table = React.createClass({
     scroll: React.PropTypes.object,
     onClickHeader: React.PropTypes.func,
     sortColumn: React.PropTypes.string,
-    orderBy: React.PropTypes.number
+    orderBy: React.PropTypes.number,
   },
 
   getDefaultProps() {
@@ -101,12 +101,12 @@ const Table = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    if('data' in nextProps) {
+    if ('data' in nextProps) {
       this.setState({
         data: nextProps.data,
       });
     }
-    if('expandedRowKeys' in nextProps) {
+    if ('expandedRowKeys' in nextProps) {
       this.setState({
         expandedRowKeys: nextProps.expandedRowKeys,
       });
@@ -114,7 +114,7 @@ const Table = React.createClass({
   },
 
   onExpandedRowsChange(expandedRowKeys) {
-    if(!this.props.expandedRowKeys) {
+    if (!this.props.expandedRowKeys) {
       this.setState({
         expandedRowKeys: expandedRowKeys,
       });
@@ -124,9 +124,9 @@ const Table = React.createClass({
 
   onExpanded(expanded, record) {
     const info = this.findExpandedRow(record);
-    if(info && !expanded) {
+    if (info && !expanded) {
       this.onRowDestroy(record);
-    } else if(!info && expanded) {
+    } else if (!info && expanded) {
       const expandedRows = this.getExpandedRows().concat();
       expandedRows.push(this.props.rowKey(record));
       this.onExpandedRowsChange(expandedRows);
@@ -138,30 +138,30 @@ const Table = React.createClass({
     const rowKey = this.props.rowKey(record);
     let index = -1;
     expandedRows.forEach((r, i) => {
-      if(r === rowKey) {
+      if (r === rowKey) {
         index = i;
       }
     });
-    if(index !== -1) {
+    if (index !== -1) {
       expandedRows.splice(index, 1);
     }
     this.onExpandedRowsChange(expandedRows);
+  },
+
+  onHeadCellClick(event) {
+    if (this.props.onClickHeader) {
+      this.props.onClickHeader(event.target.getAttribute('data-columns-name'));
+    }
   },
 
   getExpandedRows() {
     return this.props.expandedRowKeys || this.state.expandedRowKeys;
   },
 
-  onHeadCellClick(event){
-    if(this.props.onClickHeader) {
-      this.props.onClickHeader(event.target.getAttribute('data-columns-name'))
-    }
-  },
-
   getHeader(columns) {
-    const { showHeader, 
-      expandIconAsCell, 
-      prefixCls, 
+    const { showHeader,
+      expandIconAsCell,
+      prefixCls,
       expandIconColumnHeader,
       sortColumn,
       orderBy,
@@ -174,26 +174,26 @@ const Table = React.createClass({
         title: '',
       });
     }
-    ths = ths.concat(columns || this.getCurrentColumns()).map(c => {
+    ths = ths.concat(columns || this.getCurrentColumns()).map((c, index) => {
       if (c.colSpan !== 0) {
-        let sort = "";
-        if(expandIconAsCell && !expandIconColumnHeader && index === 0) {
+        let sort = '';
+        if (expandIconAsCell && !expandIconColumnHeader && index === 0) {
           // if expand icon is rendered as icon and expandIconColumnHeader is false, we need to span second column header
           c.colSpan = c.colSpan || 1;
           c.colSpan += 1;
         }
-        if(sortColumn === c.dataIndex) {
-          sort = orderBy === 0 ? "asc" : "desc"
+        if (sortColumn === c.dataIndex) {
+          sort = orderBy === 0 ? 'asc' : 'desc';
         }
-        return <th 
-          key={c.key} 
-          colSpan={c.colSpan} 
+        return (<th
+          key={c.key}
+          colSpan={c.colSpan}
           className={c.className || ''}
           data-columns-name={c.dataIndex}
           data-sort-flag={sort}
         >
           {c.title}
-        </th>;
+        </th>);
       }
     });
     return showHeader ? (
@@ -234,7 +234,7 @@ const Table = React.createClass({
       const childrenColumn = record[childrenColumnName];
       const isRowExpanded = this.isRowExpanded(record);
       let expandedRowContent;
-      if(expandedRowRender && isRowExpanded) {
+      if (expandedRowRender && isRowExpanded) {
         expandedRowContent = expandedRowRender(record, i);
       }
       let className = rowClassName(record, i);
@@ -272,10 +272,10 @@ const Table = React.createClass({
 
       const subVisible = visible && isRowExpanded;
 
-      if(expandedRowContent && isRowExpanded) {
+      if (expandedRowContent && isRowExpanded) {
         rst.push(this.getExpandedRow(key, expandedRowContent, subVisible, expandedRowClassName(record, i)));
       }
-      if(childrenColumn) {
+      if (childrenColumn) {
         rst = rst.concat(this.getRowsByData(childrenColumn, subVisible, indent + 1));
       }
     }
@@ -288,7 +288,7 @@ const Table = React.createClass({
 
   getColGroup(columns) {
     let cols = [];
-    if(this.props.expandIconAsCell) {
+    if (this.props.expandIconAsCell) {
       cols.push(<col className={`${this.props.prefixCls}-expand-icon-col`} key="rc-table-expand-icon-col"></col>);
     }
     cols = cols.concat((columns || this.props.columns).map(c => {
@@ -557,7 +557,7 @@ const Table = React.createClass({
     const prefixCls = props.prefixCls;
 
     let className = props.prefixCls;
-    if(props.className) {
+    if (props.className) {
       className += ' ' + props.className;
     }
     if (props.columnsPageRange) {
