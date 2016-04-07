@@ -222,6 +222,7 @@ const Table = React.createClass({
     const childrenColumnName = props.childrenColumnName;
     const expandedRowRender = props.expandedRowRender;
     const expandIconAsCell = props.expandIconAsCell;
+    const expandOnRowClick = props.expandOnRowClick;
     let rst = [];
     const keyFn = props.rowKey;
     const rowClassName = props.rowClassName;
@@ -273,6 +274,7 @@ const Table = React.createClass({
           onRowClick={onRowClick}
           { ...onHoverProps }
           key={key}
+          expandOnRowClick={expandOnRowClick}
           ref={rowRef(record, i)}
         />
       );
