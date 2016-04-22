@@ -126,7 +126,7 @@ const Table = React.createClass({
     this.props.onExpandedRowsChange(expandedRowKeys);
   },
 
-  onExpanded(expanded, record) {
+  onExpanded(expanded, record, event) {
     const info = this.findExpandedRow(record);
     if (info && !expanded) {
       this.onRowDestroy(record);
@@ -135,6 +135,7 @@ const Table = React.createClass({
       expandedRows.push(this.props.rowKey(record));
       this.onExpandedRowsChange(expandedRows);
     }
+    event.stopPropagation();
   },
 
   onRowDestroy(record) {
