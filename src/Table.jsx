@@ -33,6 +33,7 @@ const Table = React.createClass({
     sortColumn: React.PropTypes.string,
     orderBy: React.PropTypes.number,
     rowRef: React.PropTypes.func,
+    sortable: React.PropTypes.bool
   },
 
   getDefaultProps() {
@@ -74,11 +75,11 @@ const Table = React.createClass({
   getInitialState() {
     const props = this.props;
     let expandedRowKeys = [];
-    let rows = [ ...props.data ];
-    if (props.defaultExpandAllRows) {
-      for (let i = 0; i < rows.length; i++) {
+    let rows = [...props.data];
+    if(props.defaultExpandAllRows) {
+      for(let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        if (row[props.childrenColumnName] && row[props.childrenColumnName].length > 0) {
+        if(row[props.childrenColumnName] && row[props.childrenColumnName].length > 0) {
           expandedRowKeys.push(props.rowKey(row));
           rows = rows.concat(row[props.childrenColumnName]);
         }
@@ -96,21 +97,21 @@ const Table = React.createClass({
   },
 
   componentDidMount() {
-    if (this.refs.headTable) {
+    if(this.refs.headTable) {
       this.refs.headTable.scrollLeft = 0;
     }
-    if (this.refs.bodyTable) {
+    if(this.refs.bodyTable) {
       this.refs.bodyTable.scrollLeft = 0;
     }
   },
 
   componentWillReceiveProps(nextProps) {
-    if ('data' in nextProps) {
+    if('data' in nextProps) {
       this.setState({
         data: nextProps.data,
       });
     }
-    if ('expandedRowKeys' in nextProps) {
+    if('expandedRowKeys' in nextProps) {
       this.setState({
         expandedRowKeys: nextProps.expandedRowKeys,
       });
@@ -118,7 +119,7 @@ const Table = React.createClass({
   },
 
   onExpandedRowsChange(expandedRowKeys) {
-    if (!this.props.expandedRowKeys) {
+    if(!this.props.expandedRowKeys) {
       this.setState({
         expandedRowKeys: expandedRowKeys,
       });
@@ -128,9 +129,9 @@ const Table = React.createClass({
 
   onExpanded(expanded, record, event) {
     const info = this.findExpandedRow(record);
-    if (info && !expanded) {
+    if(info && !expanded) {
       this.onRowDestroy(record);
-    } else if (!info && expanded) {
+    } else if(!info && expanded) {
       const expandedRows = this.getExpandedRows().concat();
       expandedRows.push(this.props.rowKey(record));
       this.onExpandedRowsChange(expandedRows);
@@ -143,18 +144,18 @@ const Table = React.createClass({
     const rowKey = this.props.rowKey(record);
     let index = -1;
     expandedRows.forEach((r, i) => {
-      if (r === rowKey) {
+      if(r === rowKey) {
         index = i;
       }
     });
-    if (index !== -1) {
+    if(index !== -1) {
       expandedRows.splice(index, 1);
     }
     this.onExpandedRowsChange(expandedRows);
   },
 
   onHeadCellClick(event) {
-    if (this.props.onClickHeader) {
+    if(this.props.onClickHeader && this.props.sortable === true) {
       this.props.onClickHeader(event.target.getAttribute('data-columns-name'));
     }
   },
@@ -170,9 +171,10 @@ const Table = React.createClass({
       expandIconColumnHeader,
       sortColumn,
       orderBy,
-    } = this.props;
+      sortable
+      } = this.props;
     let ths = [];
-    if (expandIconAsCell && expandIconColumnHeader) {
+    if(expandIconAsCell && expandIconColumnHeader) {
       ths.push({
         key: 'rc-table-expandIconAsCell',
         className: `${prefixCls}-expand-icon-th`,
@@ -180,25 +182,39 @@ const Table = React.createClass({
       });
     }
     ths = ths.concat(columns || this.getCurrentColumns()).map((c, index) => {
-      if (c.colSpan !== 0) {
+      if(c.colSpan !== 0) {
         let sort = '';
-        if (expandIconAsCell && !expandIconColumnHeader && index === 0) {
+        let th;
+        if(expandIconAsCell && !expandIconColumnHeader && index === 0) {
           // if expand icon is rendered as icon and expandIconColumnHeader is false, we need to span second column header
           c.colSpan = c.colSpan || 1;
           c.colSpan += 1;
         }
-        if (sortColumn === c.dataIndex) {
-          sort = orderBy === 0 ? 'asc' : 'desc';
+        if(sortable === true) {
+          if(sortColumn === c.dataIndex) {
+            sort = orderBy === 0 ? 'asc' : 'desc';
+          }
+          th = (<th
+            key={c.key}
+            colSpan={c.colSpan}
+            className={c.className || ''}
+            data-columns-name={c.dataIndex}
+            data-sort-flag={sort}
+          >
+            {c.title}
+          </th>)
+        } else {
+          th = (
+            <th
+              key={c.key}
+              colSpan={c.colSpan}
+              className={c.className || ''}
+              data-columns-name={c.dataIndex}
+            >
+              {c.title}
+            </th>)
         }
-        return (<th
-          key={c.key}
-          colSpan={c.colSpan}
-          className={c.className || ''}
-          data-columns-name={c.dataIndex}
-          data-sort-flag={sort}
-        >
-          {c.title}
-        </th>);
+        return th
       }
     });
     return showHeader ? (
@@ -210,7 +226,8 @@ const Table = React.createClass({
 
   getExpandedRow(key, content, visible, className) {
     const prefixCls = this.props.prefixCls;
-    return (<tr key={key + '-extra-row'} style={{display: visible ? '' : 'none'}} className={`${prefixCls}-expanded-row ${className}`}>
+    return (<tr key={key + '-extra-row'} style={{display: visible ? '' : 'none'}}
+                className={`${prefixCls}-expanded-row ${className}`}>
       {this.props.expandIconAsCell ? <td key="rc-table-expand-icon-placeholder"></td> : ''}
       <td colSpan={this.props.columns.length}>
         {content}
@@ -235,22 +252,22 @@ const Table = React.createClass({
     const expandIconColumnIndex = props.expandIconColumnIndex;
     const isAnyColumnsFixed = this.isAnyColumnsFixed();
 
-    for (let i = 0; i < data.length; i++) {
+    for(let i = 0; i < data.length; i++) {
       const record = data[i];
       const key = keyFn ? keyFn(record, i) : undefined;
       const childrenColumn = record[childrenColumnName];
       const isRowExpanded = this.isRowExpanded(record);
       let expandedRowContent;
-      if (expandedRowRender && isRowExpanded) {
+      if(expandedRowRender && isRowExpanded) {
         expandedRowContent = expandedRowRender(record, i);
       }
       let className = rowClassName(record, i);
-      if (this.state.currentHoverIndex === i) {
+      if(this.state.currentHoverIndex === i) {
         className += ' ' + props.prefixCls + '-row-hover';
       }
 
       const onHoverProps = {};
-      if (isAnyColumnsFixed) {
+      if(isAnyColumnsFixed) {
         onHoverProps.onHover = this.handleRowHover;
       }
 
@@ -282,10 +299,10 @@ const Table = React.createClass({
 
       const subVisible = visible && isRowExpanded;
 
-      if (expandedRowContent && isRowExpanded) {
+      if(expandedRowContent && isRowExpanded) {
         rst.push(this.getExpandedRow(key, expandedRowContent, subVisible, expandedRowClassName(record, i)));
       }
-      if (childrenColumn) {
+      if(childrenColumn) {
         rst = rst.concat(this.getRowsByData(childrenColumn, subVisible, indent + 1));
       }
     }
@@ -298,11 +315,11 @@ const Table = React.createClass({
 
   getColGroup(columns) {
     let cols = [];
-    if (this.props.expandIconAsCell) {
+    if(this.props.expandIconAsCell) {
       cols.push(<col className={`${this.props.prefixCls}-expand-icon-col`} key="rc-table-expand-icon-col"></col>);
     }
     cols = cols.concat((columns || this.props.columns).map(c => {
-      return <col key={c.key} style={{width: c.width}} />;
+      return <col key={c.key} style={{width: c.width}}/>;
     }));
     return <colgroup>{cols}</colgroup>;
   },
@@ -310,18 +327,18 @@ const Table = React.createClass({
   getCurrentColumns() {
     const { columns, columnsPageRange, columnsPageSize, prefixCls } = this.props;
     const { currentColumnsPage } = this.state;
-    if (!columnsPageRange || columnsPageRange[0] > columnsPageRange[1]) {
+    if(!columnsPageRange || columnsPageRange[0] > columnsPageRange[1]) {
       return columns;
     }
     return columns.map((column, i) => {
       let newColumn = objectAssign({}, column);
-      if (i >= columnsPageRange[0] && i <= columnsPageRange[1]) {
+      if(i >= columnsPageRange[0] && i <= columnsPageRange[1]) {
         const pageIndexStart = columnsPageRange[0] + currentColumnsPage * columnsPageSize;
         let pageIndexEnd = columnsPageRange[0] + (currentColumnsPage + 1) * columnsPageSize - 1;
-        if (pageIndexEnd > columnsPageRange[1]) {
+        if(pageIndexEnd > columnsPageRange[1]) {
           pageIndexEnd = columnsPageRange[1];
         }
-        if (i < pageIndexStart || i > pageIndexEnd) {
+        if(i < pageIndexStart || i > pageIndexEnd) {
           newColumn.className = newColumn.className || '';
           newColumn.className += ' ' + prefixCls + '-column-hidden';
         }
@@ -353,15 +370,15 @@ const Table = React.createClass({
     const { columns } = options;
     const { prefixCls, scroll = {} } = this.props;
     let { useFixedHeader } = this.props;
-    const bodyStyle = { ...this.props.bodyStyle };
+    const bodyStyle = {...this.props.bodyStyle};
 
     let tableClassName = '';
-    if (scroll.x || columns) {
+    if(scroll.x || columns) {
       tableClassName = `${prefixCls}-fixed`;
       bodyStyle.overflowX = bodyStyle.overflowX || 'auto';
     }
 
-    if (scroll.y) {
+    if(scroll.y) {
       bodyStyle.height = bodyStyle.height || scroll.y;
       bodyStyle.overflowY = bodyStyle.overflowY || 'auto';
       useFixedHeader = true;
@@ -369,7 +386,7 @@ const Table = React.createClass({
 
     const renderTable = (hasHead = true, hasBody = true) => {
       const tableStyle = {};
-      if (!options.columns && scroll.x) {
+      if(!options.columns && scroll.x) {
         tableStyle.width = scroll.x;
       }
       return (
@@ -384,7 +401,7 @@ const Table = React.createClass({
     };
 
     let headTable;
-    if (useFixedHeader) {
+    if(useFixedHeader) {
       headTable = (
         <div
           className={`${prefixCls}-header`}
@@ -405,11 +422,11 @@ const Table = React.createClass({
       </div>
     );
 
-    if (columns && columns.length) {
+    if(columns && columns.length) {
       let refName;
-      if (columns[0].fixed === 'left' || columns[0].fixed === true) {
+      if(columns[0].fixed === 'left' || columns[0].fixed === true) {
         refName = 'fixedColumnsBodyLeft';
-      } else if (columns[0].fixed === 'right') {
+      } else if(columns[0].fixed === 'right') {
         refName = 'fixedColumnsBodyRight';
       }
       BodyTable = (
@@ -447,10 +464,10 @@ const Table = React.createClass({
   goToColumnsPage(currentColumnsPage) {
     const maxColumnsPage = this.getMaxColumnsPage();
     let page = currentColumnsPage;
-    if (page < 0) {
+    if(page < 0) {
       page = 0;
     }
-    if (page > maxColumnsPage) {
+    if(page > maxColumnsPage) {
       page = maxColumnsPage;
     }
     this.setState({
@@ -471,20 +488,20 @@ const Table = React.createClass({
     const { currentColumnsPage } = this.state;
     const maxColumnsPage = this.getMaxColumnsPage();
     let prevHandlerCls = `${prefixCls}-prev-columns-page`;
-    if (currentColumnsPage === 0) {
+    if(currentColumnsPage === 0) {
       prevHandlerCls += ` ${prefixCls}-prev-columns-page-disabled`;
     }
     const prevHandler = <span className={prevHandlerCls} onClick={this.prevColumnsPage}></span>;
     let nextHandlerCls = `${prefixCls}-next-columns-page`;
-    if (currentColumnsPage === maxColumnsPage) {
+    if(currentColumnsPage === maxColumnsPage) {
       nextHandlerCls += ` ${prefixCls}-next-columns-page-disabled`;
     }
     const nextHandler = <span className={nextHandlerCls} onClick={this.nextColumnsPage}></span>;
-    if (hasPrev) {
+    if(hasPrev) {
       column.title = <span>{prevHandler}{column.title}</span>;
       column.className = (column.className || '') + ` ${prefixCls}-column-has-prev`;
     }
-    if (hasNext) {
+    if(hasNext) {
       column.title = <span>{column.title}{nextHandler}</span>;
       column.className = (column.className || '') + ` ${prefixCls}-column-has-next`;
     }
@@ -521,37 +538,37 @@ const Table = React.createClass({
   handleBodyScroll(e) {
     // Prevent scrollTop setter trigger onScroll event
     // http://stackoverflow.com/q/1386696
-    if (e.target !== this.scrollTarget) {
+    if(e.target !== this.scrollTarget) {
       return;
     }
     const scroll = this.props.scroll || {};
-    if (scroll.x && e.target === this.refs.bodyTable) {
-      if (this.refs.headTable) {
+    if(scroll.x && e.target === this.refs.bodyTable) {
+      if(this.refs.headTable) {
         this.refs.headTable.scrollLeft = e.target.scrollLeft;
       }
-      if (e.target.scrollLeft === 0) {
-        this.setState({ scrollPosition: 'left' });
-      } else if (e.target.scrollLeft >= e.target.children[0].offsetWidth - e.target.offsetWidth) {
-        this.setState({ scrollPosition: 'right' });
-      } else if (this.state.scrollPosition !== 'middle') {
-        this.setState({ scrollPosition: 'middle' });
+      if(e.target.scrollLeft === 0) {
+        this.setState({scrollPosition: 'left'});
+      } else if(e.target.scrollLeft >= e.target.children[0].offsetWidth - e.target.offsetWidth) {
+        this.setState({scrollPosition: 'right'});
+      } else if(this.state.scrollPosition !== 'middle') {
+        this.setState({scrollPosition: 'middle'});
       }
     }
-    if (scroll.y) {
-      if (this.refs.fixedColumnsBodyLeft) {
+    if(scroll.y) {
+      if(this.refs.fixedColumnsBodyLeft) {
         this.refs.fixedColumnsBodyLeft.scrollTop = e.target.scrollTop;
       }
-      if (this.refs.fixedColumnsBodyRight) {
+      if(this.refs.fixedColumnsBodyRight) {
         this.refs.fixedColumnsBodyRight.scrollTop = e.target.scrollTop;
       }
-      if (this.refs.bodyTable) {
+      if(this.refs.bodyTable) {
         this.refs.bodyTable.scrollTop = e.target.scrollTop;
       }
     }
   },
 
   handleRowHover(isHover, index) {
-    if (isHover) {
+    if(isHover) {
       this.setState({
         currentHoverIndex: index,
       });
@@ -567,13 +584,13 @@ const Table = React.createClass({
     const prefixCls = props.prefixCls;
 
     let className = props.prefixCls;
-    if (props.className) {
+    if(props.className) {
       className += ' ' + props.className;
     }
-    if (props.columnsPageRange) {
+    if(props.columnsPageRange) {
       className += ` ${prefixCls}-columns-paging`;
     }
-    if (props.useFixedHeader || (props.scroll && props.scroll.y)) {
+    if(props.useFixedHeader || (props.scroll && props.scroll.y)) {
       className += ` ${prefixCls}-fixed-header`;
     }
     className += ` ${prefixCls}-scroll-position-${this.state.scrollPosition}`;

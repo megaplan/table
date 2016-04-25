@@ -50,9 +50,6 @@
     "react-addons-test-utils": "^0.14.0",
     "react-dom": "^0.14.0"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "dependencies": {
     "object-assign": "^4.0.1"
   }
