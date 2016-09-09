@@ -1,5 +1,5 @@
 {
-  "name": "@megaplan/rc-table",
+  "name": "rc-table",
   "version": "4.0.0-beta.5",
   "description": "table ui component for react",
   "keywords": [
