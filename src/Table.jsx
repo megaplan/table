@@ -1,39 +1,41 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import TableRow from './TableRow';
 import objectAssign from 'object-assign';
 
-const Table = React.createClass({
+const Table = createReactClass({
   propTypes: {
-    data: React.PropTypes.array,
-    expandIconAsCell: React.PropTypes.bool,
-    expandIconColumnHeader: React.PropTypes.bool,
-    expandOnRowClick: React.PropTypes.bool,
-    defaultExpandAllRows: React.PropTypes.bool,
-    expandedRowKeys: React.PropTypes.array,
-    defaultExpandedRowKeys: React.PropTypes.array,
-    useFixedHeader: React.PropTypes.bool,
-    columns: React.PropTypes.array,
-    prefixCls: React.PropTypes.string,
-    bodyStyle: React.PropTypes.object,
-    style: React.PropTypes.object,
-    rowKey: React.PropTypes.func,
-    rowClassName: React.PropTypes.func,
-    expandedRowClassName: React.PropTypes.func,
-    childrenColumnName: React.PropTypes.string,
-    onExpandedRowsChange: React.PropTypes.func,
-    indentSize: React.PropTypes.number,
-    onRowClick: React.PropTypes.func,
-    columnsPageRange: React.PropTypes.array,
-    columnsPageSize: React.PropTypes.number,
-    expandIconColumnIndex: React.PropTypes.number,
-    showHeader: React.PropTypes.bool,
-    footer: React.PropTypes.func,
-    scroll: React.PropTypes.object,
-    onClickHeader: React.PropTypes.func,
-    sortColumn: React.PropTypes.string,
-    orderBy: React.PropTypes.number,
-    rowRef: React.PropTypes.func,
-    sortable: React.PropTypes.bool
+    data: PropTypes.array,
+    expandIconAsCell: PropTypes.bool,
+    expandIconColumnHeader: PropTypes.bool,
+    expandOnRowClick: PropTypes.bool,
+    defaultExpandAllRows: PropTypes.bool,
+    expandedRowKeys: PropTypes.array,
+    defaultExpandedRowKeys: PropTypes.array,
+    useFixedHeader: PropTypes.bool,
+    columns: PropTypes.array,
+    prefixCls: PropTypes.string,
+    bodyStyle: PropTypes.object,
+    style: PropTypes.object,
+    rowKey: PropTypes.func,
+    rowClassName: PropTypes.func,
+    expandedRowClassName: PropTypes.func,
+    childrenColumnName: PropTypes.string,
+    onExpandedRowsChange: PropTypes.func,
+    indentSize: PropTypes.number,
+    onRowClick: PropTypes.func,
+    columnsPageRange: PropTypes.array,
+    columnsPageSize: PropTypes.number,
+    expandIconColumnIndex: PropTypes.number,
+    showHeader: PropTypes.bool,
+    footer: PropTypes.func,
+    scroll: PropTypes.object,
+    onClickHeader: PropTypes.func,
+    sortColumn: PropTypes.string,
+    orderBy: PropTypes.number,
+    rowRef: PropTypes.func,
+    sortable: PropTypes.bool
   },
 
   getDefaultProps() {

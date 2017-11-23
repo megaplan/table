@@ -51,6 +51,8 @@
     "react-dom": "^0.14.0"
   },
   "dependencies": {
-    "object-assign": "^4.0.1"
+    "object-assign": "^4.0.1",
+    "prop-types": "^15.6.0",
+    "create-react-class": "^15.6.2"
   }
 }
