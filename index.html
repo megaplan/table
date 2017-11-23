@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-table@3.6.2 - table ui component for react</title>
+  <title>rc-table@4.0.0-beta.5 - table ui component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,12 +737,14 @@
 
 <body>
 <div class="header">
-  <h1>rc-table@3.6.2</h1>
+  <h1>rc-table@4.0.0-beta.5</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
   <div class="examples-body">
     <ul>
+      
+      <li><a href="examples/childrenIndent.html">childrenIndent</a></li>
       
       <li><a href="examples/className.html">className</a></li>
       
@@ -750,11 +752,29 @@
       
       <li><a href="examples/dropdown.html">dropdown</a></li>
       
+      <li><a href="examples/expandOnRowClick.html">expandOnRowClick</a></li>
+      
       <li><a href="examples/expandedRowRender.html">expandedRowRender</a></li>
+      
+      <li><a href="examples/fixedColumns.html">fixedColumns</a></li>
+      
+      <li><a href="examples/fixedColumnsAndHeader.html">fixedColumnsAndHeader</a></li>
+      
+      <li><a href="examples/footer.html">footer</a></li>
+      
+      <li><a href="examples/hide-header.html">hide-header</a></li>
       
       <li><a href="examples/key.html">key</a></li>
       
-      <li><a href="examples/scrollBody.html">scrollBody</a></li>
+      <li><a href="examples/pagingColumns.html">pagingColumns</a></li>
+      
+      <li><a href="examples/rowClick.html">rowClick</a></li>
+      
+      <li><a href="examples/scrollX.html">scrollX</a></li>
+      
+      <li><a href="examples/scrollXY.html">scrollXY</a></li>
+      
+      <li><a href="examples/scrollY.html">scrollY</a></li>
       
       <li><a href="examples/simple.html">simple</a></li>
       
@@ -783,7 +803,7 @@ npm start</code></pre></div><h2>Example<a id="user-content-example" name="exampl
 
 <span class="hljs-keyword">var</span> columns = [
   {title: <span class="hljs-string">'表头1'</span>, dataIndex: <span class="hljs-string">'a'</span>, colSpan: <span class="hljs-number">2</span>,key:<span class="hljs-string">'a'</span>,width: <span class="hljs-number">100</span>},
-  {id: <span class="hljs-string">'123'</span>, title: <span class="hljs-string">'表头2'</span>, dataIndex: <span class="hljs-string">'b'</span>, colSpan: <span class="hljs-number">0</span>,key:<span class="hljs-string">'b'</span>, width: <span class="hljs-number">100</span>, render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">o, row, index</span>)</span>{
+  {id: <span class="hljs-string">'123'</span>, title: <span class="hljs-string">'表头2'</span>, dataIndex: <span class="hljs-string">'b'</span>, colSpan: <span class="hljs-number">0</span>,key:<span class="hljs-string">'b'</span>, width: <span class="hljs-number">100</span>, render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(o, row, index)</span></span>{
       <span class="hljs-keyword">let</span> obj ={
         children:o,
         props:{}
@@ -798,7 +818,7 @@ npm start</code></pre></div><h2>Example<a id="user-content-example" name="exampl
     }},
   {title: <span class="hljs-string">'表头3'</span>, dataIndex: <span class="hljs-string">'c'</span>,  key:<span class="hljs-string">'c'</span>,width: <span class="hljs-number">200</span>},
   {
-    title: <span class="hljs-string">'操作'</span>, dataIndex: <span class="hljs-string">''</span>,  key:<span class="hljs-string">'d'</span>,render: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    title: <span class="hljs-string">'操作'</span>, dataIndex: <span class="hljs-string">''</span>,  key:<span class="hljs-string">'d'</span>,render: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span>&gt;</span>操作<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
   }
   }
@@ -849,10 +869,28 @@ var table = React.render(
           <td>whether use separator table for header. better set width for columns</td>
       </tr>
       <tr>
+          <td>scroll</td>
+          <td>Object</td>
+          <th>{x: false, y: false}</th>
+          <td>whether table can be scroll in x/y direction, <code>x</code> or <code>y</code> can be a number that indicated the width and height of table body</td>
+      </tr>
+      <tr>
           <td>expandIconAsCell</td>
           <td>Boolean</td>
           <th>false</th>
           <td>whether render expandIcon as a cell</td>
+      </tr>
+      <tr>
+          <td>expandIconColumnIndex</td>
+          <td>Number</td>
+          <th>0</th>
+          <td>The index of expandIcon which column will be inserted when expandIconAsCell is false</td>
+      </tr>
+      <tr>
+          <td>expandIconColumnHeader</td>
+          <td>Boolean</td>
+          <th>true</th>
+          <td>whether render expandIcon column header. If not and expandIconAsCell is true, second column header will span first column header.</td>
       </tr>
       <tr>
           <td>rowKey</td>
@@ -867,6 +905,12 @@ var table = React.render(
           <td>get row&#39;s className</td>
       </tr>
       <tr>
+          <td>rowRef</td>
+          <td>Function(record,index):string</td>
+          <th></th>
+          <td>get row&#39;s ref key</td>
+      </tr>
+      <tr>
           <td>defaultExpandedRowKeys</td>
           <td>String[]</td>
           <th>[]</th>
@@ -877,6 +921,12 @@ var table = React.render(
           <td>String[]</td>
           <th></th>
           <td>current expanded rows keys</td>
+      </tr>
+      <tr>
+          <td>defaultExpandAllRows</td>
+          <td>Boolean</td>
+          <th>false</th>
+          <td>Expand All Rows initially</td>
       </tr>
       <tr>
           <td>onExpandedRowsChange</td>
@@ -895,6 +945,42 @@ var table = React.render(
           <td>Object[]</td>
           <th></th>
           <td>data record array to be rendered</td>
+      </tr>
+      <tr>
+          <td>indentSize</td>
+          <td>Number</td>
+          <th>15</th>
+          <td>indentSize for every level of data.i.children, better using with column.width specified</td>
+      </tr>
+      <tr>
+          <td>onRowClick</td>
+          <td>Function(record, index)</td>
+          <th></th>
+          <td>handle rowClick action, index means the index of current row among fatherElement[childrenColumnName]</td>
+      </tr>
+      <tr>
+          <td>columnsPageSize</td>
+          <td>Number</td>
+          <th>5</th>
+          <td>pageSize of columns. (Deprecated, use fixed columns)</td>
+      </tr>
+      <tr>
+          <td>columnsPageRange</td>
+          <td>Array</td>
+          <th></th>
+          <td>columns index range need paging, like [2,10]. (Deprecated, use column.fixed)</td>
+      </tr>
+      <tr>
+          <td>showHeader</td>
+          <td>Boolean</td>
+          <th>true</th>
+          <td>whether table head is shown</td>
+      </tr>
+      <tr>
+          <td>footer</td>
+          <td>Function(currentData)</td>
+          <th></th>
+          <td>table footer render function</td>
       </tr>
       <tr>
           <td>columns</td>
@@ -940,7 +1026,13 @@ var table = React.render(
                       <td>width</td>
                       <td>String|Number</td>
                       <th></th>
-                      <td>he width of the specific proportion calculation according to the width of the columns</td>
+                      <td>width of the specific proportion calculation according to the width of the columns</td>
+                  </tr>
+                  <tr>
+                      <td>fixed</td>
+                      <td>String|Boolean</td>
+                      <th></th>
+                      <td>this column will be fixed when table scroll horizontally: true or &#39;left&#39; or &#39;right&#39;</td>
                   </tr>
                   <tr>
                       <td>render</td>

@@ -1,32 +1,34 @@
-webpackJsonp([3],{
+webpackJsonp([5],{
 
 /***/ 0:
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(226);
+	module.exports = __webpack_require__(300);
 
 
-/***/ },
+/***/ }),
 
-/***/ 226:
-/***/ function(module, exports, __webpack_require__) {
+/***/ 300:
+/***/ (function(module, exports, __webpack_require__) {
 
+	/* eslint-disable no-console,func-names,react/no-multi-comp */
 	'use strict';
 	
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 	var Table = __webpack_require__(160);
-	__webpack_require__(164);
+	__webpack_require__(176);
 	
 	var CheckBox = React.createClass({
 	  displayName: 'CheckBox',
 	
 	  render: function render() {
+	    var props = this.props;
 	    return React.createElement(
 	      'label',
 	      null,
 	      React.createElement('input', { type: 'checkbox' }),
-	      this.props.id
+	      props.id
 	    );
 	  }
 	});
@@ -35,10 +37,44 @@ webpackJsonp([3],{
 	  displayName: 'MyTable',
 	
 	  getInitialState: function getInitialState() {
+	    var props = this.props;
 	    return {
-	      data: this.props.data,
+	      data: props.data,
 	      expandedRowKeys: []
 	    };
+	  },
+	
+	  onExpandedRowsChange: function onExpandedRowsChange(rows) {
+	    this.setState({
+	      expandedRowKeys: rows
+	    });
+	  },
+	
+	  getRowKey: function getRowKey(record) {
+	    return record.a;
+	  },
+	
+	  toggleButton: function toggleButton() {
+	    var _this = this;
+	
+	    if (this.state.expandedRowKeys.length) {
+	      var closeAll = function closeAll() {
+	        return _this.setState({ expandedRowKeys: [] });
+	      };
+	      return React.createElement(
+	        'button',
+	        { onClick: closeAll },
+	        '关闭所有'
+	      );
+	    }
+	    var openAll = function openAll() {
+	      return _this.setState({ expandedRowKeys: ['123', 'cdd', '1333'] });
+	    };
+	    return React.createElement(
+	      'button',
+	      { onClick: openAll },
+	      '展开全部'
+	    );
 	  },
 	
 	  handleClick: function handleClick(index) {
@@ -56,46 +92,26 @@ webpackJsonp([3],{
 	    });
 	  },
 	
+	  checkbox: function checkbox(a) {
+	    return React.createElement(CheckBox, { id: a });
+	  },
+	
+	  expandedRowRender: function expandedRowRender(record) {
+	    console.log(record);
+	    return React.createElement(
+	      'p',
+	      null,
+	      'extra: ',
+	      record.a
+	    );
+	  },
+	
 	  renderAction: function renderAction(o, row, index) {
 	    return React.createElement(
 	      'a',
 	      { href: '#', onClick: this.handleClick(index) },
 	      '删除'
 	    );
-	  },
-	
-	  getRowKey: function getRowKey(record) {
-	    return record.a;
-	  },
-	
-	  onExpandedRowsChange: function onExpandedRowsChange(rows) {
-	    this.setState({
-	      expandedRowKeys: rows
-	    });
-	  },
-	
-	  toggleButton: function toggleButton() {
-	    var _this = this;
-	
-	    if (this.state.expandedRowKeys.length) {
-	      var closeAll = function closeAll() {
-	        return _this.setState({ expandedRowKeys: [] });
-	      };
-	      return React.createElement(
-	        'button',
-	        { onClick: closeAll },
-	        '关闭所有'
-	      );
-	    } else {
-	      var openAll = function openAll() {
-	        return _this.setState({ expandedRowKeys: ['123', 'cdd', '1333'] });
-	      };
-	      return React.createElement(
-	        'button',
-	        { onClick: openAll },
-	        '展开全部'
-	      );
-	    }
 	  },
 	
 	  render: function render() {
@@ -108,7 +124,7 @@ webpackJsonp([3],{
 	      React.createElement(Table, {
 	        columns: columns,
 	        expandIconAsCell: true,
-	        expandedRowRender: expandedRowRender,
+	        expandedRowRender: this.expandedRowRender,
 	        expandedRowKeys: this.state.expandedRowKeys,
 	        onExpandedRowsChange: this.onExpandedRowsChange,
 	        data: state.data,
@@ -116,23 +132,10 @@ webpackJsonp([3],{
 	        rowKey: this.getRowKey
 	      })
 	    );
-	  },
-	
-	  checkbox: function checkbox(a) {
-	    return React.createElement(CheckBox, { id: a });
 	  }
 	});
 	
 	var data = [{ a: '123' }, { a: 'cdd', b: 'edd' }, { a: '1333', c: 'eee', d: 2 }];
-	
-	function expandedRowRender(record) {
-	  return React.createElement(
-	    'p',
-	    null,
-	    'extra: ',
-	    record.a
-	  );
-	}
 	
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -148,7 +151,7 @@ webpackJsonp([3],{
 	  })
 	), document.getElementById('__react-content'));
 
-/***/ }
+/***/ })
 
 });
 //# sourceMappingURL=expandedRowRender.js.map

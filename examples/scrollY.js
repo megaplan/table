@@ -1,22 +1,23 @@
-webpackJsonp([5],{
+webpackJsonp([15],{
 
 /***/ 0:
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(228);
+	module.exports = __webpack_require__(310);
 
 
-/***/ },
+/***/ }),
 
-/***/ 228:
-/***/ function(module, exports, __webpack_require__) {
+/***/ 310:
+/***/ (function(module, exports, __webpack_require__) {
 
+	/* eslint-disable no-console,func-names,react/no-multi-comp */
 	'use strict';
 	
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 	var Table = __webpack_require__(160);
-	__webpack_require__(164);
+	__webpack_require__(176);
 	
 	var data = [];
 	for (var i = 0; i < 30; i++) {
@@ -36,7 +37,6 @@ webpackJsonp([5],{
 	  displayName: 'Test',
 	
 	  getInitialState: function getInitialState() {
-	
 	    return {
 	      showBody: true
 	    };
@@ -68,11 +68,9 @@ webpackJsonp([5],{
 	    }];
 	    return React.createElement(Table, { columns: columns,
 	      data: data,
-	      useFixedHeader: true,
+	      scroll: { y: 300 },
 	      rowKey: getRowKey,
 	      bodyStyle: {
-	        overflow: 'auto',
-	        height: 200,
 	        display: this.state.showBody ? '' : 'none'
 	      },
 	      className: 'table' });
@@ -90,7 +88,7 @@ webpackJsonp([5],{
 	  React.createElement(Test, null)
 	), document.getElementById('__react-content'));
 
-/***/ }
+/***/ })
 
 });
-//# sourceMappingURL=scrollBody.js.map
+//# sourceMappingURL=scrollY.js.map

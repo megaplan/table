@@ -1,20 +1,23 @@
-webpackJsonp([0],[
-/* 0 */
-/***/ function(module, exports, __webpack_require__) {
+webpackJsonp([1],{
 
-	module.exports = __webpack_require__(1);
+/***/ 0:
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(177);
 
 
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
 
+/***/ 177:
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* eslint-disable no-console,func-names,react/no-multi-comp */
 	'use strict';
 	
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 	var Table = __webpack_require__(160);
-	__webpack_require__(164);
+	__webpack_require__(176);
 	
 	var columns = [{ title: '表头1', dataIndex: 'a',
 	  className: 'a',
@@ -53,7 +56,7 @@ webpackJsonp([0],[
 	  );
 	}
 	
-	var table = ReactDOM.render(React.createElement(
+	ReactDOM.render(React.createElement(
 	  'div',
 	  null,
 	  React.createElement(
@@ -69,6 +72,7 @@ webpackJsonp([0],[
 	    className: 'table' })
 	), document.getElementById('__react-content'));
 
-/***/ }
-]);
+/***/ })
+
+});
 //# sourceMappingURL=className.js.map

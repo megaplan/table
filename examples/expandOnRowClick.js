@@ -1,17 +1,17 @@
-webpackJsonp([17],{
+webpackJsonp([4],{
 
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(312);
+	module.exports = __webpack_require__(299);
 
 
 /***/ }),
 
-/***/ 312:
+/***/ 299:
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* eslint-disable no-console,func-names,react/no-multi-comp */
+	/* eslint react/no-multi-comp: 0*/
 	'use strict';
 	
 	var React = __webpack_require__(2);
@@ -54,6 +54,7 @@ webpackJsonp([17],{
 	    }];
 	    return React.createElement(Table, { columns: columns,
 	      expandIconAsCell: true,
+	      expandOnRowClick: true,
 	      data: state.data, className: 'table', rowKey: this.getRowKey });
 	  }
 	});
@@ -82,7 +83,7 @@ webpackJsonp([17],{
 	  React.createElement(
 	    'h2',
 	    null,
-	    'sub table'
+	    'sub table opens on whole tr click'
 	  ),
 	  React.createElement(MyTable, { data: data, className: 'table' })
 	), document.getElementById('__react-content'));
@@ -90,4 +91,4 @@ webpackJsonp([17],{
 /***/ })
 
 });
-//# sourceMappingURL=subTable.js.map
+//# sourceMappingURL=expandOnRowClick.js.map

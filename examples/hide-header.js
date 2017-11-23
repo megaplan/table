@@ -1,14 +1,14 @@
-webpackJsonp([16],{
+webpackJsonp([9],{
 
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(311);
+	module.exports = __webpack_require__(304);
 
 
 /***/ }),
 
-/***/ 311:
+/***/ 304:
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* eslint-disable no-console,func-names,react/no-multi-comp */
@@ -37,9 +37,10 @@ webpackJsonp([16],{
 	  React.createElement(
 	    'h2',
 	    null,
-	    'simple table'
+	    'hide table head'
 	  ),
 	  React.createElement(Table, { columns: columns,
+	    showHeader: false,
 	    data: data,
 	    className: 'table' })
 	), document.getElementById('__react-content'));
@@ -47,4 +48,4 @@ webpackJsonp([16],{
 /***/ })
 
 });
-//# sourceMappingURL=simple.js.map
+//# sourceMappingURL=hide-header.js.map
